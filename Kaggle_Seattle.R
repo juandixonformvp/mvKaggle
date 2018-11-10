@@ -17,20 +17,22 @@ library(gbm)
 library(xgboost)
 library(glmnet)
 
-setwd('C:/Users/rchang/Documents/Robert/Personal/Kaggle/Ames Data')
+setwd('home/rpchang/mvKaggle')
 df <- read.csv('train.csv')
 td <- read.csv('test.csv')
 
 df.all <- df
-df.all <- df.all[, -which(colMeans(is.na(df.all)) > 0.000001)] #removes columns with NA values
+# df.all <- df.all[, -which(colMeans(is.na(df.all)) > 0.000001)] #removes columns with NA values
 
 #remove near zero-variance predictors
 remove_cols <- nearZeroVar(df.all, names = TRUE, freqCut = 2, uniqueCut = 20)
 all_cols <- names(df.all)
 df.all <- df.all[ , setdiff(all_cols, remove_cols)]
-df.all$MS.SubClass <- as.factor(df.all$MS.SubClass) #MS.SubClass is integer, but is categorical
-df.all <- subset(df.all, select = -c(X, Order, PID, Mo.Sold)) #don't need "month sold" and other ID variables
-x_pred <- df.all[,1:ncol(df.all)-1] #drop the y variable
+
+
+df.all$zipcode <- as.factor(df.all$zipcode) #zipcode is integer, but is categorical
+df.all <- subset(df.all, select = -c(id, date, lat, long)) #don't need "month sold" and other ID variables
+x_pred <- df.all[,2:ncol(df.all)] #drop the y variable
 x_pred <- x_pred[ , order(names(x_pred))]
 x_train <- model.matrix( ~ .-1, x_pred)
 
