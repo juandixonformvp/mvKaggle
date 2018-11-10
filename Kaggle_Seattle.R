@@ -72,15 +72,15 @@ y_interact <- as.matrix(y_interact)
 fit <-glmnet(x = x_interact, y = df.all$price, alpha = 1) 
 plot(fit, xvar = "lambda")
 
-crossval <-  cv.glmnet(x = x_interact, y = df.all$SalePrice)
+crossval <-  cv.glmnet(x = x_interact, y = df.all$price)
 plot(crossval)
 penalty <- crossval$lambda.min #optimal lambda
 penalty #minimal shrinkage
-fit1 <-glmnet(x = x_interact, y = df.all$SalePrice, alpha = 1, lambda = penalty ) #estimate the model with that
-coef(fit1)
+fit1 <-glmnet(x = x_interact, y = df.all$price, alpha = 1, lambda = penalty ) #estimate the model with that
+# coef(fit1)
 
 results <- predict(object=fit1, y_interact)
-pred <- cbind(td$PID, as.data.frame(results))
-colnames(pred)<- c("PID","SalePrice")
+pred <- cbind(td$id, as.data.frame(results))
+colnames(pred)<- c("id","price")
 
-write.csv(pred, file = "glmnet_20180127.csv", row.names=FALSE)
+write.csv(pred, file = "glmnet_20181109.csv", row.names=FALSE)
