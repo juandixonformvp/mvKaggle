@@ -38,8 +38,8 @@ x_train <- model.matrix( ~ .-1, x_pred)
 
 
 td.all <- td[,names(x_pred)]
-td.all$MS.SubClass <- as.factor(td.all$MS.SubClass)
-options(na.action="na.pass") # the model matrix function deletes NA observations, must use "na.pass"
+td.all$zipcode <- as.factor(td.all$zipcode)
+# options(na.action="na.pass") # the model matrix function deletes NA observations, must use "na.pass"
 y_train <- model.matrix( ~ .-1, td.all)
 y_train[is.na(y_train)] <- 0 # now replace NAs with 0
 
@@ -56,11 +56,11 @@ x_train <- x_train[,names(y_train)]
 
 ## code to get interaction terms
 f <- as.formula(y ~ .*.)
-y <- df.all$SalePrice
+y <- df.all$price
 x_interact <- model.matrix(f, x_train)[, -1]
 
 f <- as.formula(y ~ .*.)
-y <- td$PID #dummy variable, just placeholder
+y <- td$id #dummy variable, just placeholder
 y_interact <- model.matrix(f, y_train)[, -1]
 
 x_interact <- as.matrix(x_interact)
@@ -69,7 +69,7 @@ y_interact <- as.matrix(y_interact)
 ###
 
 
-fit <-glmnet(x = x_interact, y = df.all$SalePrice, alpha = 1) 
+fit <-glmnet(x = x_interact, y = df.all$price, alpha = 1) 
 plot(fit, xvar = "lambda")
 
 crossval <-  cv.glmnet(x = x_interact, y = df.all$SalePrice)
